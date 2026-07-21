@@ -1,4 +1,8 @@
-import Link from 'next/link';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { supabase } from '../../../lib/supabase';
 import { 
   UserPen, 
   ShieldCheck, 
@@ -14,20 +18,69 @@ import {
 } from 'lucide-react';
 
 export default function ProfilPage() {
+  const router = useRouter();
+  const [user, setUser] = useState(null);
+  const [totalTransaksi, setTotalTransaksi] = useState(0);
+  const [lamaBergabung, setLamaBergabung] = useState('...');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    setLoading(true);
+    const { data: userData } = await supabase.auth.getUser();
+    if (userData?.user) {
+      setUser(userData.user);
+
+      // Hitung Lama Bergabung
+      const joinedDate = new Date(userData.user.created_at);
+      const now = new Date();
+      
+      const diffTime = Math.abs(now - joinedDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays < 30) {
+        setLamaBergabung(`${diffDays} Hari`);
+      } else if (diffDays < 365) {
+        setLamaBergabung(`${Math.floor(diffDays / 30)} Bulan`);
+      } else {
+        setLamaBergabung(`${Math.floor(diffDays / 365)} Tahun`);
+      }
+
+      // Hitung Total Transaksi
+      const { count, error } = await supabase
+        .from('transactions')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userData.user.id);
+        
+      if (!error && count !== null) {
+        setTotalTransaksi(count);
+      }
+    }
+    setLoading(false);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.replace('/');
+  };
+
+  if (loading) {
+    return <div className="p-6 text-center text-gray-500 flex items-center justify-center min-h-[50vh]">Memuat profil...</div>;
+  }
+
   return (
     <div className="p-6 flex flex-col gap-6 pb-8">
       
       {/* 1. INFO PROFIL (Foto, Nama, Nomor HP) */}
       <div className="flex flex-col items-center text-center mt-2">
-        <div className="w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden mb-3">
-          <img 
-            src="https://images.unsplash.com/photo-1506803682981-6e718a9dd3ee?auto=format&fit=crop&q=80&w=200" 
-            alt="Foto Profil Pak Budi" 
-            className="w-full h-full object-cover"
-          />
+        <div className="w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden mb-3 bg-gray-300 flex items-center justify-center text-3xl font-bold text-gray-500">
+          {user?.email?.[0].toUpperCase() || '?'}
         </div>
-        <h2 className="text-xl font-bold text-gray-900">Pak Budi</h2>
-        <p className="text-sm text-gray-500 font-medium">+62 812-3456-7890</p>
+        <h2 className="text-xl font-bold text-gray-900">{user?.user_metadata?.name || 'Pengguna'}</h2>
+        <p className="text-sm text-gray-500 font-medium">{user?.email || 'email@example.com'}</p>
       </div>
 
       {/* 2. STATISTIK PENGGUNA (Grid) */}
@@ -37,7 +90,7 @@ export default function ProfilPage() {
             <ReceiptText size={16} />
             <span className="text-xs font-bold uppercase tracking-wide">Total Transaksi</span>
           </div>
-          <p className="text-lg font-bold text-gray-900">1,240</p>
+          <p className="text-lg font-bold text-gray-900">{totalTransaksi}</p>
         </div>
         
         <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex flex-col">
@@ -45,7 +98,7 @@ export default function ProfilPage() {
             <CalendarDays size={16} />
             <span className="text-xs font-bold uppercase tracking-wide">Lama Bergabung</span>
           </div>
-          <p className="text-lg font-bold text-gray-900">2 Tahun</p>
+          <p className="text-lg font-bold text-gray-900">{lamaBergabung}</p>
         </div>
       </div>
 
@@ -83,10 +136,10 @@ export default function ProfilPage() {
       </div>
 
       {/* 4. TOMBOL KELUAR (LOGOUT) */}
-      <Link href="/login" className="mt-4 flex items-center justify-center gap-2 text-red-600 font-bold py-4 hover:bg-red-50 rounded-xl transition">
+      <button onClick={handleLogout} className="mt-4 flex items-center justify-center gap-2 text-red-600 font-bold py-4 hover:bg-red-50 rounded-xl transition cursor-pointer w-full text-center">
         <LogOut size={20} />
         Keluar
-      </Link>
+      </button>
 
     </div>
   );
