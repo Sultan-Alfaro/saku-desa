@@ -24,10 +24,10 @@ export default function BottomNav() {
           
           return (
             <Link href={item.path} key={item.name} className="flex flex-col items-center gap-1">
-              <div className={`p-1.5 rounded-full ${isActive ? 'bg-blue-400 text-white' : 'text-gray-400'}`}>
-                <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+              <div className={`p-1.5 rounded-full transition-all ${isActive ? 'bg-[#0f4d3c] text-white shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}>
+                <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
               </div>
-              <span className={`text-xs ${isActive ? 'font-bold text-gray-900' : 'font-medium text-gray-500'}`}>
+              <span className={`text-[11px] ${isActive ? 'font-bold text-[#0f4d3c]' : 'font-medium text-gray-500'}`}>
                 {item.name}
               </span>
             </Link>

@@ -20,11 +20,7 @@ export default function HutangPage() {
   const [formNote, setFormNote] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchDebts();
-  }, []);
-
-  const fetchDebts = async () => {
+  async function fetchDebts() {
     setLoading(true);
     const { data: userData } = await supabase.auth.getUser();
     if (userData?.user) {
@@ -54,7 +50,14 @@ export default function HutangPage() {
       }
     }
     setLoading(false);
-  };
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchDebts();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSimpan = async () => {
     if (!formName || !formAmount || !formDate) {
@@ -73,6 +76,18 @@ export default function HutangPage() {
       date: formDate,
       note: formNote
     }]);
+    
+    if (!error) {
+      // Catat juga ke tabel transaksi agar muncul di Transaksi Terakhir di Dashboard & menambah akurasi saldo
+      await supabase.from('transactions').insert([{
+        user_id: user.id,
+        amount: parseFloat(formAmount),
+        type: formType === 'debt' ? 'in' : 'out',
+        category: formType === 'debt' ? 'Pinjaman Masuk (Hutang)' : 'Pinjaman Keluar (Piutang)',
+        date: formDate,
+        note: `${formType === 'debt' ? 'Hutang dari' : 'Piutang ke'}: ${formName}${formNote ? ` (${formNote})` : ''}`
+      }]);
+    }
     
     setSubmitting(false);
     
@@ -189,8 +204,8 @@ export default function HutangPage() {
 
       {/* MODAL TAMBAH DATA */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-[360px] p-6">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl w-full max-w-[360px] p-6 shadow-2xl border border-gray-100">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold text-lg text-gray-900">Catat Hutang / Piutang</h3>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900"><X size={20} /></button>
@@ -198,37 +213,64 @@ export default function HutangPage() {
             
             <div className="flex flex-col gap-3">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Jenis</label>
-                <select value={formType} onChange={(e) => setFormType(e.target.value)} className="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-[#0f4d3c] focus:border-[#0f4d3c] outline-none">
-                  <option value="debt">Hutang (Saya Pinjam)</option>
-                  <option value="receivable">Piutang (Orang Pinjam)</option>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 ml-0.5">Jenis</label>
+                <select 
+                  value={formType} 
+                  onChange={(e) => setFormType(e.target.value)} 
+                  className="w-full bg-white border border-gray-300 text-gray-900 rounded-xl p-3 text-sm focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent outline-none shadow-sm"
+                >
+                  <option value="debt" className="text-gray-900">Hutang (Saya Pinjam)</option>
+                  <option value="receivable" className="text-gray-900">Piutang (Orang Pinjam)</option>
                 </select>
               </div>
               
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Nama Orang</label>
-                <input type="text" placeholder="Budi" value={formName} onChange={(e) => setFormName(e.target.value)} className="w-full border border-gray-300 rounded-lg p-2 text-sm outline-none focus:border-[#0f4d3c]" />
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 ml-0.5">Nama Orang / Toko</label>
+                <input 
+                  type="text" 
+                  placeholder="Contoh: Budi / Toko Makmur" 
+                  value={formName} 
+                  onChange={(e) => setFormName(e.target.value)} 
+                  className="w-full bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent shadow-sm" 
+                />
               </div>
               
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Nominal (Rp)</label>
-                <input type="number" placeholder="50000" value={formAmount} onChange={(e) => setFormAmount(e.target.value)} className="w-full border border-gray-300 rounded-lg p-2 text-sm outline-none focus:border-[#0f4d3c]" />
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 ml-0.5">Nominal (Rp)</label>
+                <input 
+                  type="number" 
+                  placeholder="50000" 
+                  value={formAmount} 
+                  onChange={(e) => setFormAmount(e.target.value)} 
+                  className="w-full bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent shadow-sm" 
+                />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Tanggal</label>
-                <input type="date" value={formDate} onChange={(e) => setFormDate(e.target.value)} className="w-full border border-gray-300 rounded-lg p-2 text-sm outline-none focus:border-[#0f4d3c]" />
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 ml-0.5">Tanggal</label>
+                <input 
+                  type="date" 
+                  value={formDate} 
+                  onChange={(e) => setFormDate(e.target.value)} 
+                  className="w-full bg-white border border-gray-300 text-gray-900 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent shadow-sm" 
+                />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Catatan</label>
-                <input type="text" placeholder="Pinjaman modal" value={formNote} onChange={(e) => setFormNote(e.target.value)} className="w-full border border-gray-300 rounded-lg p-2 text-sm outline-none focus:border-[#0f4d3c]" />
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 ml-0.5">Catatan</label>
+                <input 
+                  type="text" 
+                  placeholder="Pinjaman modal usaha..." 
+                  value={formNote} 
+                  onChange={(e) => setFormNote(e.target.value)} 
+                  className="w-full bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent shadow-sm" 
+                />
               </div>
             </div>
 
-            <button onClick={handleSimpan} disabled={submitting} className="w-full bg-[#0f4d3c] text-white font-bold rounded-xl p-3 mt-5 flex justify-center items-center gap-2 hover:bg-[#0a382c] disabled:opacity-70">
+            <button onClick={handleSimpan} disabled={submitting} className="w-full bg-[#0f4d3c] text-white font-bold rounded-xl p-3.5 mt-5 flex justify-center items-center gap-2 hover:bg-[#0a382c] disabled:opacity-70 shadow-md">
               {submitting ? <Loader2 className="animate-spin" size={18} /> : <Save size={18} />}
-              Simpan
+              Simpan Catatan
             </button>
           </div>
         </div>

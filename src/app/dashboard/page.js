@@ -23,11 +23,7 @@ export default function Home() {
   const [pengeluaranBulanIni, setPengeluaranBulanIni] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const fetchDashboardData = async () => {
+  async function fetchDashboardData() {
     setLoading(true);
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) return;
@@ -72,10 +68,19 @@ export default function Home() {
     setLoading(false);
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchDashboardData();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
+
   const getIcon = (category) => {
-    if (category?.toLowerCase().includes('infrastruktur')) return Wrench;
-    if (category?.toLowerCase().includes('operasional')) return Users;
-    if (category?.toLowerCase().includes('bumdes') || category?.toLowerCase().includes('penjualan')) return Store;
+    const cat = category?.toLowerCase() || '';
+    if (cat.includes('infrastruktur') || cat.includes('operasional') || cat.includes('listrik') || cat.includes('air')) return Wrench;
+    if (cat.includes('gaji') || cat.includes('upah') || cat.includes('karyawan') || cat.includes('warga')) return Users;
+    if (cat.includes('bumdes') || cat.includes('penjualan') || cat.includes('stok') || cat.includes('usaha') || cat.includes('belanja')) return Store;
+    if (cat.includes('hutang') || cat.includes('piutang') || cat.includes('pinjaman')) return Wallet;
     return DollarSign;
   };
 
@@ -133,7 +138,7 @@ export default function Home() {
       <div>
         <div className="flex justify-between items-center mb-3">
           <h3 className="text-lg font-bold text-gray-900">Transaksi Terakhir</h3>
-          <Link href="/dashboard/transaksi" className="text-sm font-semibold text-blue-600 hover:underline">
+          <Link href="/dashboard/transaksi/riwayat" className="text-sm font-semibold text-blue-600 hover:underline">
             Lihat Semua
           </Link>
         </div>

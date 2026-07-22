@@ -20,47 +20,59 @@ import {
 export default function ProfilPage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [totalTransaksi, setTotalTransaksi] = useState(0);
   const [lamaBergabung, setLamaBergabung] = useState('...');
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  const fetchUserData = async () => {
+  async function fetchUserData() {
     setLoading(true);
     const { data: userData } = await supabase.auth.getUser();
+    
     if (userData?.user) {
       setUser(userData.user);
-
-      // Hitung Lama Bergabung
-      const joinedDate = new Date(userData.user.created_at);
-      const now = new Date();
       
-      const diffTime = Math.abs(now - joinedDate);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
-      if (diffDays < 30) {
-        setLamaBergabung(`${diffDays} Hari`);
-      } else if (diffDays < 365) {
-        setLamaBergabung(`${Math.floor(diffDays / 30)} Bulan`);
-      } else {
-        setLamaBergabung(`${Math.floor(diffDays / 365)} Tahun`);
+      // Ambil profile dari tabel profiles (jika ada nama/role)
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userData.user.id)
+        .single();
+        
+      if (profileData) {
+        setProfile(profileData);
       }
 
-      // Hitung Total Transaksi
-      const { count, error } = await supabase
+      // Hitung jumlah transaksi yang pernah dilakukan user
+      const { count } = await supabase
         .from('transactions')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', userData.user.id);
         
-      if (!error && count !== null) {
+      if (count !== null) {
         setTotalTransaksi(count);
       }
     }
+    
+    // Simulasikan masa aktif/bulan bergabung dari created_at user
+    if (userData?.user?.created_at) {
+      const joinDate = new Date(userData.user.created_at);
+      const now = new Date();
+      const diffMonths = (now.getFullYear() - joinDate.getFullYear()) * 12 + (now.getMonth() - joinDate.getMonth());
+      setLamaBergabung(`${Math.max(1, diffMonths)} Bulan`);
+    } else {
+      setLamaBergabung('1 Bulan');
+    }
+
     setLoading(false);
-  };
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchUserData();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -76,10 +88,10 @@ export default function ProfilPage() {
       
       {/* 1. INFO PROFIL (Foto, Nama, Nomor HP) */}
       <div className="flex flex-col items-center text-center mt-2">
-        <div className="w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden mb-3 bg-gray-300 flex items-center justify-center text-3xl font-bold text-gray-500">
-          {user?.email?.[0].toUpperCase() || '?'}
+        <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden mb-3 bg-[#0f4d3c] flex items-center justify-center text-3xl font-bold text-white">
+          {(profile?.name?.[0] || user?.user_metadata?.name?.[0] || user?.email?.[0] || '?').toUpperCase()}
         </div>
-        <h2 className="text-xl font-bold text-gray-900">{user?.user_metadata?.name || 'Pengguna'}</h2>
+        <h2 className="text-xl font-bold text-gray-900">{profile?.name || user?.user_metadata?.name || 'Pengguna Saku Desa'}</h2>
         <p className="text-sm text-gray-500 font-medium">{user?.email || 'email@example.com'}</p>
       </div>
 

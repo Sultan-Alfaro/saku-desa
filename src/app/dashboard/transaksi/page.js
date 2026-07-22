@@ -114,31 +114,36 @@ function TransaksiForm() {
         
         {/* Input Kategori */}
         <div>
-          <label className="block text-xs font-medium text-gray-900 mb-1.5 ml-1">Kategori</label>
+          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 ml-1">Kategori</label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
               <Shapes size={18} className="text-gray-500" />
             </div>
             <select 
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="bg-white border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-green-500 focus:border-green-500 block w-full pl-10 p-3.5 appearance-none shadow-sm"
+              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent block w-full pl-11 p-3.5 appearance-none shadow-sm outline-none"
             >
-              <option value="" disabled>Pilih kategori...</option>
+              <option value="" disabled className="text-gray-400">Pilih kategori...</option>
               {type === 'in' ? (
                 <>
-                  <option value="Dana Desa">Dana Desa</option>
-                  <option value="BUMDes">Pendapatan BUMDes</option>
-                  <option value="Sumbangan">Sumbangan / Donasi</option>
-                  <option value="Pemasukan Lainnya">Lainnya</option>
+                  <option value="Penjualan Produk / Jasa" className="text-gray-900">Penjualan Produk / Jasa (UMKM)</option>
+                  <option value="Gaji / Upah Kerja" className="text-gray-900">Gaji / Upah Kerja</option>
+                  <option value="Keuntungan Usaha / Investasi" className="text-gray-900">Keuntungan Usaha / Investasi</option>
+                  <option value="Hadiah / Hibah / Pemberian" className="text-gray-900">Hadiah / Hibah / Pemberian</option>
+                  <option value="Pinjaman Masuk" className="text-gray-900">Pinjaman Masuk</option>
+                  <option value="Pemasukan Lainnya" className="text-gray-900">Pemasukan Lainnya</option>
                 </>
               ) : (
                 <>
-                  <option value="Infrastruktur">Infrastruktur</option>
-                  <option value="Operasional">Operasional</option>
-                  <option value="Kesehatan">Kesehatan</option>
-                  <option value="Pendidikan">Pendidikan</option>
-                  <option value="Pengeluaran Lainnya">Lainnya</option>
+                  <option value="Belanja Bahan / Stok Usaha" className="text-gray-900">Belanja Bahan / Stok Usaha (UMKM)</option>
+                  <option value="Biaya Operasional (Listrik, Air, Internet)" className="text-gray-900">Biaya Operasional (Listrik, Air, Internet)</option>
+                  <option value="Gaji Karyawan / Operasional Usaha" className="text-gray-900">Gaji Karyawan / Operasional Usaha</option>
+                  <option value="Kebutuhan Rumah Tangga & Harian" className="text-gray-900">Kebutuhan Rumah Tangga & Harian</option>
+                  <option value="Transportasi & Bensin" className="text-gray-900">Transportasi & Bensin</option>
+                  <option value="Makanan & Minuman" className="text-gray-900">Makanan & Minuman</option>
+                  <option value="Kesehatan & Pendidikan" className="text-gray-900">Kesehatan & Pendidikan</option>
+                  <option value="Pengeluaran Lainnya" className="text-gray-900">Pengeluaran Lainnya</option>
                 </>
               )}
             </select>
@@ -147,25 +152,25 @@ function TransaksiForm() {
 
         {/* Input Tanggal */}
         <div>
-          <label className="block text-xs font-medium text-gray-900 mb-1.5 ml-1">Tanggal</label>
+          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 ml-1">Tanggal</label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
               <Calendar size={18} className="text-gray-500" />
             </div>
             <input 
               type="date" 
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="bg-white border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-green-500 focus:border-green-500 block w-full pl-10 p-3 shadow-sm" 
+              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent block w-full pl-11 p-3.5 shadow-sm outline-none" 
             />
           </div>
         </div>
 
         {/* Input Keterangan */}
         <div>
-          <label className="block text-xs font-medium text-gray-900 mb-1.5 ml-1">Keterangan / Catatan</label>
+          <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 ml-1">Keterangan / Catatan</label>
           <div className="relative">
-            <div className="absolute top-3 left-3 pointer-events-none">
+            <div className="absolute top-3.5 left-3.5 pointer-events-none">
               <FileText size={18} className="text-gray-500" />
             </div>
             <textarea 
@@ -173,7 +178,7 @@ function TransaksiForm() {
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Tuliskan detail transaksi di sini..."
-              className="bg-white border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-green-500 focus:border-green-500 block w-full pl-10 p-3 shadow-sm resize-none"
+              className="bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 text-sm rounded-xl focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent block w-full pl-11 p-3.5 shadow-sm resize-none outline-none"
             ></textarea>
           </div>
         </div>
