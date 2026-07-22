@@ -246,13 +246,13 @@ export default function HutangPage() {
                 />
               </div>
 
-              <div>
+              <div className="w-full max-w-full min-w-0">
                 <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 ml-0.5">Tanggal</label>
                 <input 
                   type="date" 
                   value={formDate} 
                   onChange={(e) => setFormDate(e.target.value)} 
-                  className="w-full bg-white border border-gray-300 text-gray-900 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent shadow-sm" 
+                  className="w-full max-w-full min-w-0 bg-white border border-gray-300 text-gray-900 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent shadow-sm box-border appearance-none" 
                 />
               </div>
 

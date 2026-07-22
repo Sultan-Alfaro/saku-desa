@@ -61,7 +61,7 @@ function TransaksiForm() {
   };
 
   return (
-    <div className="p-6 flex flex-col gap-6">
+    <div className="p-6 flex flex-col gap-6 max-w-full overflow-hidden min-w-0 box-border">
       
       {/* Header Halaman */}
       <div className="text-center">
@@ -70,7 +70,7 @@ function TransaksiForm() {
       </div>
 
       {/* Tab Switcher (Pemasukan / Pengeluaran) */}
-      <div className="bg-gray-200 p-1 rounded-xl flex">
+      <div className="bg-gray-200 p-1 rounded-xl flex max-w-full">
         <button
           onClick={() => { setType('in'); setCategory(''); }}
           className={`flex-1 py-3 text-sm font-bold rounded-lg transition-all ${
@@ -94,35 +94,35 @@ function TransaksiForm() {
       </div>
 
       {/* Kotak Input Nominal */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col items-center">
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col items-center max-w-full min-w-0">
         <label className="text-xs font-bold text-gray-500 tracking-wider mb-4">NOMINAL TRANSAKSI</label>
-        <div className="flex items-center justify-center gap-2">
-          <span className="text-2xl font-bold text-gray-700">Rp</span>
+        <div className="flex items-center justify-center gap-2 w-full max-w-full min-w-0">
+          <span className="text-2xl font-bold text-gray-700 shrink-0">Rp</span>
           <input 
             type="number" 
             placeholder="0"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="text-5xl font-bold text-gray-700 outline-none w-full max-w-[250px] bg-transparent text-center focus:text-gray-900 placeholder:text-gray-300"
+            className="text-5xl font-bold text-gray-700 outline-none w-full max-w-[250px] min-w-0 bg-transparent text-center focus:text-gray-900 placeholder:text-gray-300"
           />
         </div>
         <div className="w-16 h-1 bg-gray-200 rounded-full mt-4"></div>
       </div>
 
       {/* Form Detail Tambahan */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 max-w-full min-w-0 w-full">
         
         {/* Input Kategori */}
-        <div>
+        <div className="w-full max-w-full min-w-0">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 ml-1">Kategori</label>
-          <div className="relative">
+          <div className="relative w-full max-w-full min-w-0">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
               <Shapes size={18} className="text-gray-500" />
             </div>
             <select 
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent block w-full pl-11 p-3.5 appearance-none shadow-sm outline-none"
+              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent block w-full max-w-full min-w-0 pl-11 pr-4 py-3.5 appearance-none shadow-sm outline-none box-border"
             >
               <option value="" disabled className="text-gray-400">Pilih kategori...</option>
               {type === 'in' ? (
@@ -151,9 +151,9 @@ function TransaksiForm() {
         </div>
 
         {/* Input Tanggal */}
-        <div>
+        <div className="w-full max-w-full min-w-0">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 ml-1">Tanggal</label>
-          <div className="relative">
+          <div className="relative w-full max-w-full min-w-0">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
               <Calendar size={18} className="text-gray-500" />
             </div>
@@ -161,15 +161,15 @@ function TransaksiForm() {
               type="date" 
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent block w-full pl-11 p-3.5 shadow-sm outline-none" 
+              className="bg-white border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent block w-full max-w-full min-w-0 pl-11 pr-3 py-3.5 shadow-sm outline-none box-border appearance-none" 
             />
           </div>
         </div>
 
         {/* Input Keterangan */}
-        <div>
+        <div className="w-full max-w-full min-w-0">
           <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 ml-1">Keterangan / Catatan</label>
-          <div className="relative">
+          <div className="relative w-full max-w-full min-w-0">
             <div className="absolute top-3.5 left-3.5 pointer-events-none">
               <FileText size={18} className="text-gray-500" />
             </div>
@@ -178,7 +178,7 @@ function TransaksiForm() {
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Tuliskan detail transaksi di sini..."
-              className="bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 text-sm rounded-xl focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent block w-full pl-11 p-3.5 shadow-sm resize-none outline-none"
+              className="bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 text-sm rounded-xl focus:ring-2 focus:ring-[#0f4d3c] focus:border-transparent block w-full max-w-full min-w-0 pl-11 pr-4 py-3.5 shadow-sm resize-none outline-none box-border"
             ></textarea>
           </div>
         </div>

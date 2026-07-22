@@ -25,9 +25,32 @@ body {
   overflow-x: hidden;
 }
 
-/* Fix untuk iOS Safari input zoom dan appearance */
+/* Fix untuk iOS Safari input zoom, appearance, dan mencegah overflow (menonjol keluar) */
 input, select, textarea {
   font-size: 16px !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+input[type="date"] {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+/* Memastikan teks tanggal internal di iOS Safari tidak meluber (overflow) */
+input[type="date"]::-webkit-date-and-time-value {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  display: block !important;
+  line-height: normal !important;
 }
 
 @media (min-width: 640px) {
