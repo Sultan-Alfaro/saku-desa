@@ -15,8 +15,7 @@ export default function BottomNav() {
   ];
 
   return (
-    // INI ADALAH BUNGKUS UTAMA UNTUK NAVIGASI (Satu div paling luar)
-    <div className="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200">
+    <div className="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 z-50 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_10px_rgba(0,0,0,0.03)]">
       <div className="flex justify-between items-center px-6 py-3">
         {navItems.map((item) => {
           const isActive = pathname === item.path;

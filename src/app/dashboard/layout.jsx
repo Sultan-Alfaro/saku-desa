@@ -40,8 +40,8 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-200 flex justify-center font-sans">
-      <div className="w-full max-w-md bg-slate-50 min-h-screen relative shadow-xl pb-20">
+    <div className="min-h-screen min-h-[100dvh] bg-gray-200 flex justify-center font-sans">
+      <div className="w-full max-w-md bg-slate-50 min-h-screen min-h-[100dvh] relative shadow-xl pb-[calc(5rem+env(safe-area-inset-bottom,20px))]">
         <header className="flex items-center gap-2 px-6 py-4 bg-white border-b border-gray-200 sticky top-0 z-10">
           <Landmark className="w-6 h-6 text-green-900" />
           <h1 className="text-xl font-bold text-green-900">Saku Desa</h1>
